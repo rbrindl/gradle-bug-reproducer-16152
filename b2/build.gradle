@@ -23,3 +23,33 @@ publishing {
 	}
 }
  
+task check_16152 {
+	dependsOn gradle.includedBuild('b1').task(':prj1:publishToMavenLocal')
+	dependsOn gradle.includedBuild('b1').task(':prj2:publishToMavenLocal')
+	dependsOn tasks.named('publishToMavenLocal')
+	doLast {
+		def targetId = getId('../b1/prj1/build/publications/mavenJava/pom-default.xml')
+		def referenceId = getReference('build/publications/mavenJava/pom-default.xml')
+		println "target POM id: $targetId"
+		println "referencing POM: $referenceId"
+		assert targetId == referenceId
+	}
+}
+
+def getId(String path) {
+	def file = file(path)
+	nodeId(readXml(file))
+}
+
+def getReference(String path) {
+	def file = file(path)
+	nodeId(readXml(file).dependencies.dependency[0])
+
+}
+static nodeId(xml) {
+	"${xml.groupId.text()}:${xml.artifactId.text()}"
+}
+
+static readXml(File file) {
+	new XmlSlurper().parse(file)
+}
