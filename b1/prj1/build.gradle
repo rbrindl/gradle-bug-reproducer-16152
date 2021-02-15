@@ -1,0 +1,22 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+dependencies {
+	implementation project(':prj2')
+}
+
+publishing {
+        publications {
+                mavenJava(MavenPublication) {
+			groupId = 'my-' + groupId
+                        from components.java
+			versionMapping {
+				usage('java-runtime') {
+					fromResolutionResult()
+				}
+			}
+                }
+        }
+}

@@ -1,0 +1,2 @@
+rootProject.name='b1'
+include 'prj1', 'prj2'
